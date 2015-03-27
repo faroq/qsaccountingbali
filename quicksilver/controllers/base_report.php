@@ -209,7 +209,7 @@ class base_report extends MY_Controller {
         $child = $this->bm->get_trialbalance_child_header($thbl);
 
         $result = array();
-        $result = $this->get_max_tb($head, $child);
+//        $result = $this->get_max_tb($head, $child);
         $total = count($result);
         echo '{success:true,record:' . $total . ',data:' . json_encode($result) . '}';
     }
