@@ -1,0 +1,106 @@
+/*home*/
+#header-north{
+    width:100%;
+    height:100%;
+/*    position: fixed; */
+    left: 0px; 
+    top: 0px; 
+    z-index: -1; 
+    color:#D5E1EA;
+   
+}
+.stretch {
+    width:100%;
+    height:100%;
+}
+#start-div h2 {
+    font-size: 12px;
+    color: #555;
+    padding-bottom:5px;
+    border-bottom:1px solid #C3D0DF;
+}
+#start-div p {
+    margin: 10px 0;
+}
+#details-panel h2 {
+    padding:10px 10px 0;
+    font-size:12px;
+    color:#15428B;
+}
+#details-panel p {
+    padding:10px 10px 0;
+}
+#details-panel pre {
+    border-top:1px dotted #ddd;
+    border-bottom:1px dotted #ddd;
+    margin-top:10px;
+    padding:0 5px;
+    background:#f5f5f5;
+}
+#details-panel .details-info {
+    margin:15px;
+    padding:15px;
+    border:1px dotted #999;
+    color:#555;
+    background: #f9f9f9;
+}
+.icons-add{
+    background-image:url('../images/icons/add.png') !important;
+}
+.icon-edit-record{
+    background-image:url('../images/icons/application_edit.png') !important;
+}
+.icon-delete{
+    background-image:url('../images/icons/delete.gif')!important;
+}
+
+.icon-refresh{
+    background-image:url('../images/icons/refresh.gif')!important;
+}
+
+.icon-simpan{
+    background-image:url('../images/icons/save.gif')!important;
+}
+.icon-approval{
+    background-image:url('../images/icons/list_accept.png')!important;
+}
+.icon-reject{
+    background-image:url('../images/icons/list_delete.png')!important;
+}
+.icon-preview{
+    background-image:url('../images/icons/application_view_list.png')!important;
+    
+}
+
+/*delete.gif*/
+.my_toolbar{
+/*height: 104px !important;
+width: 2048px !important;*/
+/*background-image: url('../images/nav/bkgnd.png') !important;*/
+border: none !important;
+background: #0079d2;
+/*background: ;*/
+}
+.label-color{
+    color: white;
+}
+
+.log_out div a span
+{
+    color: black !important;
+/*    font-weight: bolder;*/
+}
+
+.lbl-text-logout {color:white;font-size:12px; }
+          /*.lbl-text-logout a {color:white;}*/
+          
+.x-grid-warna .x-grid-cell     
+    {
+        background-color: #EDEDED;
+     font-weight:  bold;
+    }
+.x-hira-header .x-grid-cell 
+{
+        /*background-color: #EDEDED;*/
+     font-weight:  bold;
+    }

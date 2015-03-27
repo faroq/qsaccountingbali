@@ -1,0 +1,54 @@
+{
+    success:true,
+    record:7,
+    data:[{
+        "tanggal":"2013-08-31",
+        "keterangan":"SALDO AWAL",
+        "referensi":null,
+        "debet":"0",
+        "kredit":"0",
+        "jumlah":"0"
+    },{
+        "tanggal":"2013-09-23",
+        "keterangan":"tes5555-entry mundur",
+        "referensi":"EJ201309-13",
+        "debet":"500000",
+        "kredit":"0",
+        "jumlah":"500000"
+    },{
+        "tanggal":"2013-09-23",
+        "keterangan":"tes666-undur 1",
+        "referensi":"EJ201309-14",
+        "debet":"0",
+        "kredit":"200000",
+        "jumlah":"-200000"
+    },{
+        "tanggal":"2013-09-24",
+        "keterangan":"122-345-test entry1",
+        "referensi":"EJ201309-10",
+        "debet":"0",
+        "kredit":"1000000",
+        "jumlah":"-1000000"
+    },{
+        "tanggal":"2013-09-24",
+        "keterangan":"122-346-kembali",
+        "referensi":"EJ201309-11",
+        "debet":"1000000",
+        "kredit":"0",
+        "jumlah":"1000000"
+    },{
+        "tanggal":"2013-09-26",
+        "keterangan":"TEST5-TEST12313",
+        "referensi":"EJ201309-12",
+        "debet":"2000000",
+        "kredit":"0",
+        "jumlah":"2000000"
+    },{
+        "tanggal":"2013-09-30",
+        "keterangan":"SALDO AKHIR",
+        "referensi":null,
+        "debet":"3500000",
+        "kredit":"1200000",
+        "jumlah":"2300000"
+    }]
+    }
