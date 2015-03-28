@@ -242,6 +242,7 @@ if (!defined('BASEPATH'))
                                         return;
                                     }
                                     var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    setDefaultStoreProxy(tb_store,tbUrl);
                                     tb_store.load({params:{thbl:vthbl}});
                 
                                 }
@@ -262,6 +263,43 @@ if (!defined('BASEPATH'))
                                     var winprinttb=Ext.create('tbprint_wind');
                                     winprinttb.show();
                                     Ext.getDom('tbprint').src ='<?php echo base_url(); ?>' +'base_report/trialbalance_pdf?thbl='+vthbl;
+//                                    window.open('<?php echo base_url(); ?>' +'base_report/trialbalance_pdf?thbl='+vthbl);
+                                }
+                                //                                    ,action: 'add'
+                            },
+                            //----------------kelompok--------------
+                            {xtype: 'button',
+                                text: 'Load Data Kelompok',
+                                iconCls: 'icon-preview',
+                                handler:function()
+                                {
+                                    if (!Ext.getCmp('tb_thbl').getValue())
+                                    {
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    setDefaultStoreProxy(tb_store,'<?php echo base_url(); ?>' + 'base_report/get_row_trialbalance_header');
+                                    tb_store.load({params:{thbl:vthbl}});
+                
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Preview PDF Kelompok',
+                                iconCls: 'icon-preview_report',
+                                onClick: function()
+                                {
+                                    if (!Ext.getCmp('tb_thbl').getValue())
+                                    {
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    
+                                    var winprinttb=Ext.create('tbprint_wind');
+                                    winprinttb.show();
+                                    Ext.getDom('tbprint').src ='<?php echo base_url(); ?>' +'base_report/trialbalance_header_pdf?thbl='+vthbl;
 //                                    window.open('<?php echo base_url(); ?>' +'base_report/trialbalance_pdf?thbl='+vthbl);
                                 }
                                 //                                    ,action: 'add'
