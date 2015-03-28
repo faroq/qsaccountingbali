@@ -177,6 +177,36 @@ if (!defined('BASEPATH'))
 //                                    window.open('<?php echo base_url(); ?>' +'income_statement/instat_pdf?thbl='+vthbl);
 
                                 }
+                            },
+                            {xtype: 'button',
+                                text: 'Load Data Kelompok',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    if (!Ext.getCmp('incs_thbl').getValue()){
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('incs_thbl').getValue(),'Ym');
+                                    incs_store.load({params:{thbl:vthbl}});
+                
+                                }
+                            },
+                            {xtype: 'button',
+                                text: 'Preview PDF Kelompok',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('incs_thbl').getValue()){
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('incs_thbl').getValue(),'Ym');
+                                    //incs_store.load({params:{thbl:vthbl}});
+                                    var winprintincs=Ext.create('incsprint_wind');
+                                    winprintincs.show();
+                                    Ext.getDom('incsprint').src ='<?php echo base_url(); ?>' +'income_statement/instat_pdf?thbl='+vthbl;
+//                                    window.open('<?php echo base_url(); ?>' +'income_statement/instat_pdf?thbl='+vthbl);
+
+                                }
                             }
                             ]
                         ,features:[{

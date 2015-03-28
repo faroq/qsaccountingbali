@@ -24,7 +24,7 @@ class masteraccount_model extends MY_MODEL {
             $sql_search = "(lower(nama_rekening) LIKE '%" . strtolower($search) . "%' or rekening LIKE '%" . strtolower($search) . "%' or nama_jenis like '%" . strtolower($search) . "%')";
 //            $this->db->where($sql_search, NULL);
         }
-        $select="rekening,nama_rekening,default,nama_kelompok,nama_jenis,kelompok,jenis";
+        $select="rekening,nama_rekening,dk,default,nama_kelompok,nama_jenis,kelompok,jenis";
         $order=array("rekening", "asc");     
         $table="v_mst_account";
         

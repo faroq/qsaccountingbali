@@ -57,7 +57,15 @@ class global_reference_model extends MY_MODEL {
         return $results;
     }
     
-    
+    function get_kelompok()
+    {
+        $sql_search="";
+        $select="kelompok, nama_kelompok";
+        $order=NULL;
+        $table="mst_account_kel";
+        $results = $this->get_rows_table($sql_search,$table,$select,$order);
+        return $results;
+    }
 
     function get_mst_account()
     {

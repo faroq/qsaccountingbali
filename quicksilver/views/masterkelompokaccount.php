@@ -51,6 +51,7 @@ if (!defined('BASEPATH'))
             }
         }
     });    
+    var mst_kelhead_cb= createStore(false, 'mmst_kelhead_cb', ['kelompok','nama_kelompok'], '<?php echo base_url(); ?>' + 'global_reference/get_kelompok');
     
     Ext.define('mst_account_kel_form', {
         extend          : 'Ext.form.Panel',
@@ -122,12 +123,31 @@ if (!defined('BASEPATH'))
                     afterLabelTextTpl: required_css,
                     fieldLabel: 'Nama Kelompok'
                 },
+//                {
+//                    name: 'kode_asosiasi',
+//                    id: 'mst_account_kel_kode_asosiasi_txt',
+//                    tooltip: 'Field tidak boleh kosong',
+//                    afterLabelTextTpl: required_css,
+//                    fieldLabel: 'Kode Asosiasi/Group'
+//                },
                 {
-                    name: 'kode_asosiasi',
-                    id: 'mst_account_kel_kode_asosiasi_txt',
+                    xtype: 'combo',
                     tooltip: 'Field tidak boleh kosong',
-                    afterLabelTextTpl: required_css,
-                    fieldLabel: 'Kode Asosiasi'
+//                    afterLabelTextTpl: required_css,
+                    fieldLabel: 'Kode Asosiasi/Group',
+                    id: 'mst_account_kel_kode_asosiasi_txt',
+                    store: mst_kelhead_cb,
+                    valueField: 'kelompok',
+                    displayField: 'nama_kelompok',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                     allowBlank: true,
+                    name:'kode_asosiasi',
+                    editable: true,
+                    anchor: '90%',
+                    hiddenName: 'kode_asosiasi'
+//                    ,
+//                    emptyText: 'Kode Asosiasi/Group'
                 },
                 {
                     name: 'nilai',
@@ -290,6 +310,7 @@ if (!defined('BASEPATH'))
                                             Ext.getCmp('mst_account_kel_jenis_cb').setValue(rec.get('jenis'));
                                             Ext.getCmp('mst_account_kel_dk_cb').setValue(rec.get('dk'));
                                             Ext.getCmp('mst_account_kel_nama_kelompok_txt').setValue(rec.get('nama_kelompok'));
+                                            Ext.getCmp('mst_account_kel_kode_asosiasi_txt').getStore().load();
                                             Ext.getCmp('mst_account_kel_kode_asosiasi_txt').setValue(rec.get('kode_asosiasi'));
                                             Ext.getCmp('mst_account_kel_nilai_txt').setValue(rec.get('nilai'));
                                             Ext.getCmp('mst_account_kel_flag_txt').setValue(rec.get('flag'));
@@ -428,6 +449,7 @@ if (!defined('BASEPATH'))
                                     onClick: function(){
                                         var winmacc=Ext.create('mst_account_kel_wind');
                                         winmacc.setTitle('Add Form');
+                                        Ext.getCmp('mst_account_kel_kode_asosiasi_txt').getStore().load();
                                         Ext.getCmp('mst_account_kel_simpan_btn').setText('Simpan');
                                         Ext.getCmp('mst_account_kel_simpan_btn').setIconCls('icons-add');
                                         

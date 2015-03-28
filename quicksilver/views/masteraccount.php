@@ -10,7 +10,7 @@ if (!defined('BASEPATH'))
         autoSync	: false,
         storeId		: 'mMasterAccountStore',
         fields: [ 
-            'rekening','nama_rekening','default','nama_kelompok','nama_jenis','kelompok','jenis'
+            'rekening','nama_rekening','dk','default','nama_kelompok','nama_jenis','kelompok','jenis'
         ],
         proxy		: {
             type: 'ajax',
@@ -219,6 +219,24 @@ if (!defined('BASEPATH'))
                     tooltip: 'Field tidak boleh kosong',
                     afterLabelTextTpl: required_css,
                     fieldLabel: 'Nama Rekening'                        
+                },
+                {
+                    xtype: 'combo',
+                    tooltip: 'Field tidak boleh kosong',
+                    afterLabelTextTpl: required_css,
+                    fieldLabel: 'Debet Kredit',
+                    id: 'mst_account_dk',
+                    name:'dk',
+                    store: mst_account_kel_dk_store,
+                    valueField: 'dk',
+                    displayField: 'default',
+                    typeAhead: true,
+                    triggerAction: 'all',
+                    // allowBlank: false,
+                    editable: false,
+                    anchor: '90%',
+                    hiddenName: 'dk',
+                    emptyText: 'Debet Kredit'
                 }                    
             ];
             this.buttons = [
@@ -306,7 +324,7 @@ if (!defined('BASEPATH'))
         extend          : 'Ext.window.Window',
         title           : 'Form Edit User',
         width           : 400,
-        height          : 200,
+        height          : 220,
         layout          : 'fit',
         autoShow        : true,
         modal           : true,
@@ -375,6 +393,9 @@ if (!defined('BASEPATH'))
                                             Ext.getCmp('macc_kelompok').store.proxy.api.read='<?php echo base_url(); ?>' + 'masteraccount/get_kelompok/'+jenisval;
                                             Ext.getCmp('macc_kelompok').store.load();
                                             Ext.getCmp('macc_kelompok').setValue(rec.get('kelompok'));
+                                            Ext.getCmp('mst_account_dk').getStore().load();
+                                            Ext.getCmp('mst_account_dk').setValue(rec.get('dk'));
+                                            
                                             winmacc.show();
                                             //                                            Ext.Msg.alert('Edit', 'Edit ' + rec.get('rekening'));
                                         }
@@ -473,6 +494,12 @@ if (!defined('BASEPATH'))
                                 dataIndex: 'nama_rekening',
                                 sortable: true,
                                 width: 120
+                            },{
+                                header: "D/K",
+                                dataIndex: 'dk',
+                                sortable: true,
+                                width: 50,
+                                hidden:true
                             },{
                                 header: "Debet/Kredit",
                                 dataIndex: 'default',

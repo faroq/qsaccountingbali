@@ -50,8 +50,8 @@ class masteraccount extends MY_Controller {
         $kelompok = isset($_POST['kelompok']) ? $this->db->escape_str($this->input->post('kelompok', TRUE)) : '';
         $rekening = isset($_POST['rekening']) ? $this->db->escape_str($this->input->post('rekening', TRUE)) : '';
         $namarekening = isset($_POST['nama_rekening']) ? $this->db->escape_str($this->input->post('nama_rekening', TRUE)) : '';
-        
-        $param=array($opt,$rekening,$namarekening,$kelompok,$jenis);
+        $dk = isset($_POST['dk']) ? $this->db->escape_str($this->input->post('dk', TRUE)) : 'D';
+        $param=array($opt,$rekening,$namarekening,$kelompok,$jenis,$dk);
         $spname='sp_mstaccount';
         $result = $this->macc_model->SP_execData($spname, $param, true);
         echo $result;
@@ -68,8 +68,8 @@ class masteraccount extends MY_Controller {
         $namarekening=' ';
         $kelompok=' ';
         $jenis=' ';
-        
-        $param=array($opt,$rekening,$namarekening,$kelompok,$jenis);
+        $dk='';
+        $param=array($opt,$rekening,$namarekening,$kelompok,$jenis,$dk);
         $spname='sp_mstaccount';
         $result = $this->macc_model->SP_execData($spname, $param, true);
 //        $json = array(

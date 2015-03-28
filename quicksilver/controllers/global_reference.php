@@ -33,6 +33,12 @@ class global_reference extends MY_Controller {
         $result = $this->global_reference_model->get_plusmin();
         echo $result;
     }
+    
+    public function get_kelompok() {
+        $result = $this->global_reference_model->get_kelompok();
+        echo $result;
+    }
+  
 
     public function get_dept()
     {
