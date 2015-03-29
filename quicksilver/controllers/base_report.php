@@ -344,15 +344,25 @@ class base_report extends MY_Controller {
     
     public function get_row_trialbalance_header() {
         $thbl = isset($_POST['thbl']) ? json_decode($this->input->post('thbl', TRUE)) : null;
-        $head = $this->bm->get_account_kelompok();
+        $head = $this->bm->get_account_level1();
         $child = $this->bm->get_trialbalance_child_header($thbl);
+
+        $result = array();
+        $result = $this->get_max_tb($head, $child);
+        $total = count($result);
+        echo '{success:true,record:' . $total . ',data:' . json_encode($result) . '}';
+    }
+
+    public function get_row_trialbalance_header_l1() {
+        $thbl = isset($_POST['thbl']) ? json_decode($this->input->post('thbl', TRUE)) : null;
+        $head = $this->bm->get_account_level1();
+        $child = $this->bm->get_trialbalance_child_header_l1($thbl);
 
         $result = array();
         $result = $this->get_max_tb_header($head, $child);
         $total = count($result);
         echo '{success:true,record:' . $total . ',data:' . json_encode($result) . '}';
     }
-
     public function get_max_jenis_account() {
         return $this->bm->get_max_jenis_account();
     }
@@ -419,8 +429,47 @@ class base_report extends MY_Controller {
     {
         //$thbl = isset($_GET['thbl']) ? json_decode($this->input->post('thbl', TRUE)) : null;
         $thbl = $_GET['thbl'];
-        $head = $this->bm->get_account_kelompok();
+        $head = $this->bm->get_account_level1();
         $child = $this->bm->get_trialbalance_child_header($thbl);
+
+        $result = array();
+        $result = $this->get_max_tb($head, $child);
+        //echo $thbl.' '.$head.' '.$child.' '.$result;
+        //$total = count($result);
+        //echo '{success:true,record:' . $total . ',data:' . json_encode($result) . '}';
+
+        $this->load->library('report/trialbalance_header_pdf');
+        $pdf=new trialbalance_header_pdf();
+        $pdf->AliasNbPages();
+
+        //$pdf->SetAuthor('Arief Himawan');
+        $pdf->SetTitle('Trial Balance');
+
+        //Column titles
+
+        //echo date("d-m-Y H:i:s");
+
+        //Data loading
+        //$data=$pdf->LoadData('countries.txt');
+        $pdf->SetFont('Arial','',14);
+        $pdf->AddPage('L');
+        //$pdf->BasicTable($header,$result);
+        //$pdf->AddPage();
+        //$pdf->ImprovedTable($header,$result);
+        //$pdf->AddPage();
+        $pdf->create_pdf($this->getthbl($thbl), json_encode($result));
+        //$pdf->Output('myPdf.pdf','F');
+//        $pdf->Output();
+        $pdf->Output("tbprint","I");
+        
+    }
+    
+    public function trialbalance_header_l1_pdf()
+    {
+        //$thbl = isset($_GET['thbl']) ? json_decode($this->input->post('thbl', TRUE)) : null;
+        $thbl = $_GET['thbl'];
+        $head = $this->bm->get_account_level1();
+        $child = $this->bm->get_trialbalance_child_header_l1($thbl);
 
         $result = array();
         $result = $this->get_max_tb_header($head, $child);
@@ -428,8 +477,8 @@ class base_report extends MY_Controller {
         //$total = count($result);
         //echo '{success:true,record:' . $total . ',data:' . json_encode($result) . '}';
 
-        $this->load->library('report/trialbalance_header_pdf');
-        $pdf=new trialbalance_header_pdf();
+        $this->load->library('report/trialbalance_header_l1_pdf');
+        $pdf=new trialbalance_header_l1_pdf();
         $pdf->AliasNbPages();
 
         //$pdf->SetAuthor('Arief Himawan');

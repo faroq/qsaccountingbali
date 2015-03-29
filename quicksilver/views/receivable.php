@@ -21,7 +21,8 @@ if (!defined('BASEPATH'))
         }
     }
 );
-    
+    var rv_date=new Date();
+    var app_date=new Date();
     Ext.define('MyTabReceivable', {
         extend: 'Ext.container.Container',
         xtype: 'TabReceivable',
@@ -69,6 +70,25 @@ if (!defined('BASEPATH'))
                                         anchor: '90%',
                                         format:'Y-F'
                                         ,id:'rv_thbl'
+//                                       ,maxValue :new Date(app_date.getFullYear(),app_date.getMonth(),1)                                        
+                                        ,listeners:{
+                                            select:function(m, d){
+                                                rv_date=d;      
+                                                m.setValue(rv_date); 
+                                            },
+                                            change:function(m,n,o,opt){
+//                                                m.setValue(new Date(n.getFullYear(),n.getMonth(),1));
+//                                                console.log(n);
+                                                  m.setValue(rv_date); 
+                                            },
+                                            writeablechange:function( me, Read, eOpts ){                                                
+                                                me.setValue(rv_date); 
+                                            },
+                                            dirtychange:function( me, isDirty, eOpts ){                                               
+                                                me.setValue(rv_date); 
+                                            }
+                                          
+                                        }
                                         //                                        ,maxValue:new Date()
                                     },
                                     
@@ -197,7 +217,11 @@ if (!defined('BASEPATH'))
                             }
                         ]
                     }
-                ]
+                ],listeners:{
+                change:function(){
+                Ext.getCmp('rv_thbl').setValue(rv_date);
+                }
+                }
                 
             },
             ,{
@@ -288,6 +312,7 @@ if (!defined('BASEPATH'))
                                 text: 'Load Data',
                                 iconCls: 'icon-preview',
                                 handler:function(){
+                                    
                                     if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
                                         if (!Ext.getCmp('rv_thbl').getValue()){
                                             set_message(1,'Tahun Bulan belum diisi!!');
@@ -322,6 +347,12 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
                                         parquery[0]['value']='bln';
                                         parquery[2]['value']=Ext.Date.format(Ext.getCmp('rv_thbl').getValue(),'Ym');                                       
+//                                        console.log(rv_date);
+//                                        console.log(Ext.getCmp('rv_thbl').getValue())
+                                        if(Ext.getCmp('rv_thbl').getValue()!=rv_date){
+                                            Ext.getCmp('rv_thbl').setValue(rv_date);
+                                            parquery[2]['value']=  Ext.Date.format(rv_date,'Ym');
+                                          }
                                     }
                                     if (!Ext.getCmp('rv_filter_tgl').collapsed){
                                         parquery[0]['value']='tgl';                                        
@@ -331,9 +362,11 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
                                         parquery[1]['value']='on';
                                         parquery[5]['value']=Ext.getCmp('glreceiv_rekening').getValue(); 
+                                        setDefaultStoreProxy(glreceiv_store2,'<?php echo base_url(); ?>' + 'receivable_report/get_row_d');
                                         Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store2,getColums_glreceiv(2));
                                         glreceiv_store2.load({params:{query:Ext.JSON.encode(parquery)}});
                                     }else{
+                                        setDefaultStoreProxy(glreceiv_store1,'<?php echo base_url(); ?>' + 'receivable_report/get_row_d');
                                         Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store1,getColums_glreceiv(1));
                                         glreceiv_store1.load({params:{query:Ext.JSON.encode(parquery)}});
                                     }
@@ -378,6 +411,10 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
                                         parquery[0]['value']='bln';
                                         parquery[2]['value']=Ext.Date.format(Ext.getCmp('rv_thbl').getValue(),'Ym');
+                                         if(Ext.getCmp('rv_thbl').getValue()!=rv_date){
+                                            Ext.getCmp('rv_thbl').setValue(rv_date);
+                                            parquery[2]['value']=  Ext.Date.format(rv_date,'Ym');
+                                          }
                                     }
                                     if (!Ext.getCmp('rv_filter_tgl').collapsed){
                                         parquery[0]['value']='tgl';
@@ -395,8 +432,266 @@ if (!defined('BASEPATH'))
                                     }
                                     
                                     var winprintreceivable=Ext.create('winprinttemp');
-                                        winprintreceivable.show();
-                                        to_print('printoutpdf', 'receivable_report/receivable_d_pdfA3?query='+Ext.JSON.encode(parquery)); 
+                                    winprintreceivable.show();
+                                    to_print('printoutpdf', 'receivable_report/receivable_d_pdfA3?query='+Ext.JSON.encode(parquery)); 
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Rekap PerTanggal',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('rv_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('rv_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('rv_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('glreceiv_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('rv_thbl').getValue(),'Ym');                                       
+//                                        console.log(rv_date);
+//                                        console.log(Ext.getCmp('rv_thbl').getValue())
+                                        if(Ext.getCmp('rv_thbl').getValue()!=rv_date){
+                                            Ext.getCmp('rv_thbl').setValue(rv_date);
+                                            parquery[2]['value']=  Ext.Date.format(rv_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('glreceiv_rekening').getValue(); 
+                                        setDefaultStoreProxy(glreceiv_store2,'<?php echo base_url(); ?>' + 'receivable_report/get_row_tgl');
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store2,getColums_glreceiv(2));
+                                        glreceiv_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+                                        setDefaultStoreProxy(glreceiv_store1,'<?php echo base_url(); ?>' + 'receivable_report/get_row_tgl');
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store1,getColums_glreceiv(1));
+                                        glreceiv_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Rekap PerTanggal PDF A3',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('rv_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('rv_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('rv_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('glreceiv_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('rv_thbl').getValue(),'Ym');
+                                         if(Ext.getCmp('rv_thbl').getValue()!=rv_date){
+                                            Ext.getCmp('rv_thbl').setValue(rv_date);
+                                            parquery[2]['value']=  Ext.Date.format(rv_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_awal').getValue(), 'Y-m-d');
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_akhir').getValue(), 'Y-m-d');
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('glreceiv_rekening').getValue();
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store2,getColums_gl(2));
+                                        //gl_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store1,getColums_gl(1));
+                                        //gl_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                    
+                                    var winprintreceivable=Ext.create('winprinttemp');
+                                    winprintreceivable.show();
+                                    to_print('printoutpdf', 'receivable_report/receivable_tgl_pdfA3?query='+Ext.JSON.encode(parquery)); 
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Rekap PerRekening',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('rv_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('rv_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('rv_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('glreceiv_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('rv_thbl').getValue(),'Ym');                                       
+//                                        console.log(rv_date);
+//                                        console.log(Ext.getCmp('rv_thbl').getValue())
+                                        if(Ext.getCmp('rv_thbl').getValue()!=rv_date){
+                                            Ext.getCmp('rv_thbl').setValue(rv_date);
+                                            parquery[2]['value']=  Ext.Date.format(rv_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('glreceiv_rekening').getValue(); 
+                                        setDefaultStoreProxy(glreceiv_store2,'<?php echo base_url(); ?>' + 'receivable_report/get_row_rek');
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store2,getColums_glreceiv(2));
+                                        glreceiv_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+                                        setDefaultStoreProxy(glreceiv_store1,'<?php echo base_url(); ?>' + 'receivable_report/get_row_rek');
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store1,getColums_glreceiv(1));
+                                        glreceiv_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Rekap PerRekening PDF A3',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('rv_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('rv_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('rv_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('glreceiv_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('rv_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('rv_thbl').getValue(),'Ym');
+                                         if(Ext.getCmp('rv_thbl').getValue()!=rv_date){
+                                            Ext.getCmp('rv_thbl').setValue(rv_date);
+                                            parquery[2]['value']=  Ext.Date.format(rv_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('rv_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_awal').getValue(), 'Y-m-d');
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('rv_tgl_akhir').getValue(), 'Y-m-d');
+                                    }
+                                    if (!Ext.getCmp('glreceiv_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('glreceiv_rekening').getValue();
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store2,getColums_gl(2));
+                                        //gl_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+                                        Ext.getCmp('gridreceiv1f').reconfigure(glreceiv_store1,getColums_gl(1));
+                                        //gl_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                    
+                                    var winprintreceivable=Ext.create('winprinttemp');
+                                    winprintreceivable.show();
+                                    to_print('printoutpdf', 'receivable_report/receivable_rek_pdfA3?query='+Ext.JSON.encode(parquery)); 
                                 }
                             }
                         ]
@@ -430,6 +725,9 @@ if (!defined('BASEPATH'))
                 //                store_gl_akun.load();
                 //                Ext.getCmp('gl_rekening').getStore().reload();
                 Ext.getCmp('rv_filter_tgl').collapse(true);
+//                this.setMaxValue( new Date(app_date.getFullYear(),app_date.getMonth(),1) ); 
+//                var m=new Date();
+//                Ext.getCmp('rv_thbl').setMaxValue(new Date(m.getFullYear(), m.getMonth(), 28));
             }  
         },
         initComponent: function() {

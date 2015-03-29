@@ -22,7 +22,7 @@ class mst_accountkel extends MY_MODEL {
         $sql_search="";
         if ($search != "")
         {
-            $sql_search = "(lower(nama_kelompok) LIKE '%" . strtolower($search) . "%')";           
+            $sql_search = "(lower(nama_kelompok) LIKE '%" . strtolower($search) . "%' or lower(kelompok) LIKE '%" . strtolower($search) . "%')";           
         }
         $select="jenis,nama_jenis,dk,`default`,kelompok,nama_kelompok,kode_asosiasi,nilai,flag";
         $order=array("kelompok", "asc");

@@ -71,39 +71,57 @@ class balancesheet_pdf extends FPDF
             }
             $this->SetFont('Arial','',8);
             $this->SetTextColor(0);
-
+            $filljenis=false;
             if ($json[$i]['cls_d'] == 'x-bls-header')
             {
                 $this->SetFillColor(205,205,0);
                 $fill = true;
+                $filljenis=true;
             }
             else if ($json[$i]['cls_d'] == 'x-bls-header1')
             {
                 $this->SetFillColor(0,205,0);
                 $fill = true;
             }
+            else if ($json[$i]['cls_d'] == 'x-bls-header2')
+            {
+                $this->SetFillColor(0,205,0);
+                $fill = true;
+            }
+            else if($json[$i]['cls_d'] == 'x-bls-bold'){
+                $this->SetFont('Arial','B',8);
+            }
             else
                 $fill = false;
-            
-            $this->Cell($w[0],5,$json[$i]['jenis_d'],1,0,'L',$fill);
-            $this->Cell($w[1],5,$json[$i]['rekening_d'],1,0,'L',$fill);
+             
+            $this->Cell($w[0],5,$json[$i]['jenis_d'],1,0,'L',$filljenis);
+            $this->Cell($w[1],5,substr($json[$i]['rekening_d'],0,39),1,0,'L',$fill);
             $this->Cell($w[2],5,number_format($json[$i]['subtotal_d']),1,0,'R',$fill);
             $this->Cell($w[3],5,number_format($json[$i]['total_d']),1,0,'R',$fill);
-
+            $filljenis=false;
+             $this->SetFont('Arial','',8);
             if ($json[$i]['cls_k'] == 'x-bls-header')
             {
                 $this->SetFillColor(205,205,0);
                 $fill = true;
+                $filljenis=true;
             }
             else if ($json[$i]['cls_k'] == 'x-bls-header1')
             {
                 $this->SetFillColor(0,205,0);
                 $fill = true;
             }
+            else if ($json[$i]['cls_k'] == 'x-bls-header2')
+            {
+                $this->SetFillColor(0,205,0);
+                $fill = true;
+            }else if($json[$i]['cls_k'] == 'x-bls-bold'){
+                $this->SetFont('Arial','B',8);
+            }
             else
                 $fill = false;
-            $this->Cell($w[4],5,$json[$i]['jenis_k'],1,0,'L',$fill);
-            $this->Cell($w[5],5,$json[$i]['rekening_k'],1,0,'L',$fill);
+            $this->Cell($w[4],5,$json[$i]['jenis_k'],1,0,'L',$filljenis);
+            $this->Cell($w[5],5,substr($json[$i]['rekening_k'],0,37),1,0,'L',$fill);
             $this->Cell($w[6],5,number_format($json[$i]['subtotal_k']),1,0,'R',$fill);
             $this->Cell($w[7],5,number_format($json[$i]['total_k']),1,0,'R',$fill);
             $this->Ln();

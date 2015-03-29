@@ -3,7 +3,7 @@ if (!defined('BASEPATH'))
     exit('No direct script access allowed');
 ?>
 <script type="text/javascript" language="javascript"> 
-    
+    var blsUrl='<?php echo base_url(); ?>' + 'balance_sheet/get_rows';
     var bls_store = createStore(false, 'mbls_store', 
     ['jenis_d',        
         'rekening_d',
@@ -29,7 +29,7 @@ if (!defined('BASEPATH'))
 //        border: false,
 //        html:'<iframe style="width:100%;height:100%;" id="cetakvoucherprint" src=""></iframe>'
 //    });
-    
+    var blcthbl;
     Ext.define('bsprint_wind', {
         extend          : 'Ext.window.Window',
         title           : 'Balance Sheet Preview',
@@ -78,6 +78,22 @@ if (!defined('BASEPATH'))
                                 anchor: '90%',
                                 format:'Y-F'
                                 ,id:'bls_thbl'
+                                ,listeners:{
+                                    select:function(m, d){
+                                        blcthbl=d;m.setValue(blcthbl); 
+                                    },
+                                            change:function(m,n,o,opt){
+//                                                m.setValue(new Date(n.getFullYear(),n.getMonth(),1));
+//                                                console.log(n);
+                                                  m.setValue(blcthbl); 
+                                            },
+                                            writeablechange:function( me, Read, eOpts ){                                                
+                                                me.setValue(blcthbl); 
+                                            },
+                                            dirtychange:function( me, isDirty, eOpts ){                                               
+                                                me.setValue(blcthbl); 
+                                            }
+                                }
                                 //                                        ,maxValue:new Date()
                             }]
                     }
@@ -316,6 +332,11 @@ if (!defined('BASEPATH'))
                                         return;
                                     }
                                     var vthbl=Ext.Date.format(Ext.getCmp('bls_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('bls_thbl').getValue()!=blcthbl){
+                                      vthbl=  Ext.Date.format(blcthbl,'Ym');
+                                      Ext.getCmp('bls_thbl').setValue(blcthbl);
+                                    }
+                                    setDefaultStoreProxy(bls_store,blsUrl);
                                     bls_store.load({params:{thbl:vthbl}});
                 
                                 }
@@ -328,13 +349,99 @@ if (!defined('BASEPATH'))
                                         set_message(2,'Tahun Bulan Belum Diisi!!!');
                                         return;
                                     }
+                                   
                                     var vthbl=Ext.Date.format(Ext.getCmp('bls_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('bls_thbl').getValue()!=blcthbl){
+                                      vthbl=  Ext.Date.format(blcthbl,'Ym');
+                                      Ext.getCmp('bls_thbl').setValue(blcthbl);
+                                    }
+                                    
                                     var winprint=Ext.create('bsprint_wind');
                                     winprint.show();
                                     Ext.getDom('bsprint').src ='<?php echo base_url(); ?>' +'balance_sheet/bs_pdf?thbl='+vthbl;
                                     //window.open('<?php echo base_url(); ?>' +'balance_sheet/bs_pdf?thbl='+vthbl);
                                 }
-                            }]
+                            }
+                            ,{xtype: 'button',
+                                text: 'Load Data Kelompok',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    if (!Ext.getCmp('bls_thbl').getValue()){
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('bls_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('bls_thbl').getValue()!=blcthbl){
+                                      vthbl=  Ext.Date.format(blcthbl,'Ym');
+                                      Ext.getCmp('bls_thbl').setValue(blcthbl);
+                                    }
+                                    setDefaultStoreProxy(bls_store,'<?php echo base_url(); ?>' +'balance_sheet/get_rows_header');
+                                    bls_store.load({params:{thbl:vthbl}});
+                                    
+                
+                                }
+                            },
+                            {xtype: 'button',
+                                text: 'Preview PDF Kelompok',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('bls_thbl').getValue()){
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                   
+                                    var vthbl=Ext.Date.format(Ext.getCmp('bls_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('bls_thbl').getValue()!=blcthbl){
+                                      vthbl=  Ext.Date.format(blcthbl,'Ym');
+                                      Ext.getCmp('bls_thbl').setValue(blcthbl);
+                                    }
+                                    
+                                    var winprint=Ext.create('bsprint_wind');
+                                    winprint.show();
+                                    Ext.getDom('bsprint').src ='<?php echo base_url(); ?>' +'balance_sheet/bs_header_pdf?thbl='+vthbl;
+                                    //window.open('<?php echo base_url(); ?>' +'balance_sheet/bs_pdf?thbl='+vthbl);
+                                }
+                            },{xtype: 'button',
+                                text: 'Load Data Kelompok Level 1',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    if (!Ext.getCmp('bls_thbl').getValue()){
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('bls_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('bls_thbl').getValue()!=blcthbl){
+                                      vthbl=  Ext.Date.format(blcthbl,'Ym');
+                                      Ext.getCmp('bls_thbl').setValue(blcthbl);
+                                    }
+                                    setDefaultStoreProxy(bls_store,'<?php echo base_url(); ?>' +'balance_sheet/get_rows_lv1');
+                                    bls_store.load({params:{thbl:vthbl}});
+                                    
+                
+                                }
+                            },
+                            {xtype: 'button',
+                                text: 'Preview PDF Kelompok  Level 1',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('bls_thbl').getValue()){
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                   
+                                    var vthbl=Ext.Date.format(Ext.getCmp('bls_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('bls_thbl').getValue()!=blcthbl){
+                                      vthbl=  Ext.Date.format(blcthbl,'Ym');
+                                      Ext.getCmp('bls_thbl').setValue(blcthbl);
+                                    }
+                                    
+                                    var winprint=Ext.create('bsprint_wind');
+                                    winprint.show();
+                                    Ext.getDom('bsprint').src ='<?php echo base_url(); ?>' +'balance_sheet/bs_lv1_pdf?thbl='+vthbl;
+                                    //window.open('<?php echo base_url(); ?>' +'balance_sheet/bs_pdf?thbl='+vthbl);
+                                }
+                            }
+                            ]
                         }
                 ]
             }

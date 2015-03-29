@@ -40,6 +40,7 @@ if (!defined('BASEPATH'))
 );
     
     var rgroup='';
+    var glthbl=new Date();
     Ext.define('MyTabGeneralLedger', {
         extend: 'Ext.container.Container',
         xtype: 'TabGeneralLedger',
@@ -85,7 +86,24 @@ if (!defined('BASEPATH'))
                                         fieldLabel: 'Tahun Bulan',
                                         anchor: '90%',
                                         format:'Y-F'
-                                        ,id:'gl_thbl'
+                                        ,id:'gl_thbl',
+                                listeners:{
+                                    select:function(m, d){
+                                        glthbl=d; m.setValue(glthbl); 
+                                    },
+                                            change:function(m,n,o,opt){
+//                                                m.setValue(new Date(n.getFullYear(),n.getMonth(),1));
+//                                                console.log(n);
+                                                   
+                                                  m.setValue(glthbl); 
+                                            },
+                                            writeablechange:function( me, Read, eOpts ){                                                
+                                                me.setValue(glthbl); 
+                                            },
+                                            dirtychange:function( me, isDirty, eOpts ){                                               
+                                                me.setValue(glthbl); 
+                                            }
+                                }
                                         //                                        ,maxValue:new Date()
                                     }
                                     
@@ -352,6 +370,10 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('gl_filter_bulantahun').collapsed){
                                         parquery[0]['value']='bln';
                                         parquery[2]['value']=Ext.Date.format(Ext.getCmp('gl_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('gl_thbl').getValue()!=glthbl){
+                                            Ext.getCmp('gl_thbl').setValue(glthbl);
+                                            parquery[2]['value']=  Ext.Date.format(glthbl,'Ym');
+                                          }
                                     }
                                     if (!Ext.getCmp('gl_filter_tgl').collapsed){
                                         parquery[0]['value']='tgl';                                        
@@ -413,6 +435,10 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('gl_filter_bulantahun').collapsed){
                                         parquery[0]['value']='bln';
                                         parquery[2]['value']=Ext.Date.format(Ext.getCmp('gl_thbl').getValue(),'Ym');
+                                        if(Ext.getCmp('gl_thbl').getValue()!=glthbl){
+                                            Ext.getCmp('gl_thbl').setValue(glthbl);
+                                            parquery[2]['value']=  Ext.Date.format(glthbl,'Ym');
+                                          }
                                     }
                                     if (!Ext.getCmp('gl_filter_tgl').collapsed){
                                         parquery[0]['value']='tgl';
@@ -471,6 +497,10 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('gl_filter_bulantahun').collapsed){
                                         parquery[0]['value']='bln';
                                         parquery[2]['value']=Ext.Date.format(Ext.getCmp('gl_thbl').getValue(),'Ym');
+                                        if(Ext.getCmp('gl_thbl').getValue()!=glthbl){
+                                            Ext.getCmp('gl_thbl').setValue(glthbl);
+                                            parquery[2]['value']=  Ext.Date.format(glthbl,'Ym');
+                                          }
                                     }
                                     if (!Ext.getCmp('gl_filter_tgl').collapsed){
                                         parquery[0]['value']='tgl';

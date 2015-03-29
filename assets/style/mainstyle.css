@@ -136,12 +136,19 @@
     background-color: #FFB0C4;
     font-weight:  bold;
 }
+.x-hirabold-header .x-grid-cell 
+{
+    /*background-color: #FFB0C4;*/
+    font-weight:  bold;
+}
 .x-bls-header .x-jenisd-cell
 {
     background-color: #FFB0C4;
     font-weight:  bold;
 }    
-
+.x-bls-bold{
+    font-weight:  bold !important;
+}
 .x-bls-header
 {
     background-color: #FFB0C4 !important;

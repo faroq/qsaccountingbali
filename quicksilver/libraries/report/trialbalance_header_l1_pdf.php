@@ -7,12 +7,11 @@ if (!defined('BASEPATH'))
  */
 
 /**
- * Description of trialbalance_header_pdf
+ * Description of trialbalance_header_l1_pdf
  *
  * @author miyzan
  */
-class trialbalance_header_pdf extends MY_FPDF{
-    //put your code here
+class trialbalance_header_l1_pdf extends MY_FPDF{
     function Header()
     {
             //Logo
@@ -63,7 +62,7 @@ class trialbalance_header_pdf extends MY_FPDF{
         {
             $this->SetFillColor(220,235,205);
             $this->SetTextColor(0);
-            if (($i % 36) == 0)
+            if (($i % 30) == 0)
             {
                 if($i!=0) $this->AddPage('L');
                 $this->SetFont('Arial','B',10);

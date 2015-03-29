@@ -6,7 +6,7 @@ Ext.define('Ext.form.field.Month', {
     selectMonth: null,
     createPicker: function() {
         var me = this,
-            format = Ext.String.format;
+        format = Ext.String.format;
         return Ext.create('Ext.picker.Month', {
             pickerField: me,
             ownerCt: me.ownerCt,
@@ -26,11 +26,26 @@ Ext.define('Ext.form.field.Month', {
             minText: format(me.minText, me.formatDate(me.minValue)),
             maxText: format(me.maxText, me.formatDate(me.maxValue)),
             listeners: { 
-        select:        { scope: me,   fn: me.onSelect     }, 
-        monthdblclick: { scope: me,   fn: me.onOKClick     },    
-        yeardblclick:  { scope: me,   fn: me.onOKClick     },
-        OkClick:       { scope: me,   fn: me.onOKClick     },    
-        CancelClick:   { scope: me,   fn: me.onCancelClick }        
+                select:        {
+                    scope: me,   
+                    fn: me.onSelect
+                }, 
+                monthdblclick: {
+                    scope: me,   
+                    fn: me.onOKClick
+                },    
+                yeardblclick:  {
+                    scope: me,   
+                    fn: me.onOKClick
+                },
+                OkClick:       {
+                    scope: me,   
+                    fn: me.onOKClick
+                },    
+                CancelClick:   {
+                    scope: me,   
+                    fn: me.onCancelClick
+                }        
             },
             keyNavConfig: {
                 esc: function() {
@@ -41,19 +56,27 @@ Ext.define('Ext.form.field.Month', {
     },
     onCancelClick: function() {
         var me = this;    
-    me.selectMonth = null;
+        me.selectMonth = null;
         me.collapse();
     },
     onOKClick: function() {
         var me = this;    
-    if( me.selectMonth ) {
-               me.setValue(me.selectMonth);
+        //        console.log('dari component');
+        //        console.log(me.selectMonth);
+        if( me.selectMonth ) {
+                    console.log(me.selectMonth);
+            me.setValue(me.selectMonth);
             me.fireEvent('select', me, me.selectMonth);
-    }
+        }
         me.collapse();
     },
     onSelect: function(m, d) {
         var me = this;    
-    me.selectMonth = new Date(( d[0]+1 ) +'/1/'+d[1]);
+        me.selectMonth = new Date(( d[0]+1 ) +'/1/'+d[1]);
+        
+    //    console.log('dari component');
+    //    console.log(new Date(( d[0]+1 ) +'/1/'+d[1]));
+    //    me.selectMonth = new Date(( d[0] ) +'/1/'+d[1]);
+    //    console.log(d[0]);
     }
 });  

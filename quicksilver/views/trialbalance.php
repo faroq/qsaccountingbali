@@ -30,6 +30,7 @@ if (!defined('BASEPATH'))
         html:'<iframe style="width:100%;height:100%;" id="tbprint" src=""></iframe>'
 
     });
+    var vtrialthbl;
     Ext.define('MyTabTrialBalance', {
         extend: 'Ext.container.Container',
         xtype: 'TabTrialBalance',
@@ -66,6 +67,22 @@ if (!defined('BASEPATH'))
                                 anchor: '90%',
                                 format:'Y-F'
                                 ,id:'tb_thbl'
+                                ,listeners:{
+                                    select:function(m, d){
+                                        vtrialthbl=d;m.setValue(vtrialthbl); 
+                                    },
+                                            change:function(m,n,o,opt){
+//                                                m.setValue(new Date(n.getFullYear(),n.getMonth(),1));
+//                                                console.log(n);
+                                                  m.setValue(vtrialthbl); 
+                                            },
+                                            writeablechange:function( me, Read, eOpts ){                                                
+                                                me.setValue(vtrialthbl); 
+                                            },
+                                            dirtychange:function( me, isDirty, eOpts ){                                               
+                                                me.setValue(vtrialthbl); 
+                                            }
+                                }
                                 //                                        ,maxValue:new Date()
                             }]
                     }
@@ -242,6 +259,10 @@ if (!defined('BASEPATH'))
                                         return;
                                     }
                                     var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('tb_thbl').getValue()!=vtrialthbl){
+                                      Ext.getCmp('tb_thbl').setValue(vtrialthbl);
+                                      vthbl=  Ext.Date.format(vtrialthbl,'Ym');
+                                    }
                                     setDefaultStoreProxy(tb_store,tbUrl);
                                     tb_store.load({params:{thbl:vthbl}});
                 
@@ -259,7 +280,10 @@ if (!defined('BASEPATH'))
                                         return;
                                     }
                                     var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
-                                    
+                                    if(Ext.getCmp('tb_thbl').getValue()!=vtrialthbl){
+                                      Ext.getCmp('tb_thbl').setValue(vtrialthbl);
+                                      vthbl=  Ext.Date.format(vtrialthbl,'Ym');
+                                    }
                                     var winprinttb=Ext.create('tbprint_wind');
                                     winprinttb.show();
                                     Ext.getDom('tbprint').src ='<?php echo base_url(); ?>' +'base_report/trialbalance_pdf?thbl='+vthbl;
@@ -279,6 +303,10 @@ if (!defined('BASEPATH'))
                                         return;
                                     }
                                     var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('tb_thbl').getValue()!=vtrialthbl){
+                                      Ext.getCmp('tb_thbl').setValue(vtrialthbl);
+                                      vthbl=  Ext.Date.format(vtrialthbl,'Ym');
+                                    }
                                     setDefaultStoreProxy(tb_store,'<?php echo base_url(); ?>' + 'base_report/get_row_trialbalance_header');
                                     tb_store.load({params:{thbl:vthbl}});
                 
@@ -296,10 +324,58 @@ if (!defined('BASEPATH'))
                                         return;
                                     }
                                     var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
-                                    
+                                    if(Ext.getCmp('tb_thbl').getValue()!=vtrialthbl){
+                                      Ext.getCmp('tb_thbl').setValue(vtrialthbl);
+                                      vthbl=  Ext.Date.format(vtrialthbl,'Ym');
+                                    }
                                     var winprinttb=Ext.create('tbprint_wind');
                                     winprinttb.show();
                                     Ext.getDom('tbprint').src ='<?php echo base_url(); ?>' +'base_report/trialbalance_header_pdf?thbl='+vthbl;
+//                                    window.open('<?php echo base_url(); ?>' +'base_report/trialbalance_pdf?thbl='+vthbl);
+                                }
+                                //                                    ,action: 'add'
+                            }
+                            //-----------------------------------kelompok level 1
+                            //----------------kelompok--------------
+                            ,{xtype: 'button',
+                                text: 'Load Data Kelompok Level 1',
+                                iconCls: 'icon-preview',
+                                handler:function()
+                                {
+                                    if (!Ext.getCmp('tb_thbl').getValue())
+                                    {
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('tb_thbl').getValue()!=vtrialthbl){
+                                      Ext.getCmp('tb_thbl').setValue(vtrialthbl);
+                                      vthbl=  Ext.Date.format(vtrialthbl,'Ym');
+                                    }
+                                    setDefaultStoreProxy(tb_store,'<?php echo base_url(); ?>' + 'base_report/get_row_trialbalance_header_l1');
+                                    tb_store.load({params:{thbl:vthbl}});
+                
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Preview PDF Kelompok Level 1',
+                                iconCls: 'icon-preview_report',
+                                onClick: function()
+                                {
+                                    if (!Ext.getCmp('tb_thbl').getValue())
+                                    {
+                                        set_message(2,'Tahun Bulan Belum Diisi!!!');
+                                        return;
+                                    }
+                                    var vthbl=Ext.Date.format(Ext.getCmp('tb_thbl').getValue(),'Ym');
+                                    if(Ext.getCmp('tb_thbl').getValue()!=vtrialthbl){
+                                      Ext.getCmp('tb_thbl').setValue(vtrialthbl);
+                                      vthbl=  Ext.Date.format(vtrialthbl,'Ym');
+                                    }
+                                    var winprinttb=Ext.create('tbprint_wind');
+                                    winprinttb.show();
+                                    Ext.getDom('tbprint').src ='<?php echo base_url(); ?>' +'base_report/trialbalance_header_l1_pdf?thbl='+vthbl;
 //                                    window.open('<?php echo base_url(); ?>' +'base_report/trialbalance_pdf?thbl='+vthbl);
                                 }
                                 //                                    ,action: 'add'

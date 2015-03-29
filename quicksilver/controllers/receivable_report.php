@@ -47,6 +47,59 @@ class receivable_report extends MY_Controller {
         echo $result;
     }
     
+    public function get_row_tgl() {
+        $search = isset($_POST['query']) ? json_decode($this->input->post('query', TRUE)) : array();
+
+        $param = array();
+        foreach ($search as $value) {
+            array_push($param, $value->value);
+        }
+        $spname = 'sp_receivable_tgl';
+        $result = $this->rrm->SP_getData($spname, $param);      
+//        echo '{success:true,record:1,data:[]}';
+        echo $result;
+    }
+    
+    public function get_row_rek() {
+        $search = isset($_POST['query']) ? json_decode($this->input->post('query', TRUE)) : array();
+
+        $param = array();
+        foreach ($search as $value) {
+            array_push($param, $value->value);
+        }
+        $spname = 'sp_receivable_rek';
+        $result = $this->rrm->SP_getData($spname, $param);      
+//        echo '{success:true,record:1,data:[]}';
+        echo $result;
+    }
+    public function receivable_rek_pdfA3() {
+        $search = isset($_GET['query']) ? json_decode($_GET['query']) : array();
+
+        $param = array();
+        foreach ($search as $value)
+        {
+            array_push($param, $value->value);
+            //echo $value->value.'<br>';
+        }
+        $spname = 'sp_receivable_rek';
+        $result = $this->rrm->SP_getData($spname, $param);
+        $this->load_report($result, $param);        
+    }
+    
+    public function receivable_tgl_pdfA3() {
+        $search = isset($_GET['query']) ? json_decode($_GET['query']) : array();
+
+        $param = array();
+        foreach ($search as $value)
+        {
+            array_push($param, $value->value);
+            //echo $value->value.'<br>';
+        }
+        $spname = 'sp_receivable_tgl';
+        $result = $this->rrm->SP_getData($spname, $param);
+        $this->load_report($result, $param);        
+    }
+    
     public function receivable_d_pdfA3() {
         $search = isset($_GET['query']) ? json_decode($_GET['query']) : array();
 
@@ -58,7 +111,12 @@ class receivable_report extends MY_Controller {
         }
         $spname = 'sp_receivable_d';
         $result = $this->rrm->SP_getData($spname, $param);
-
+        $this->load_report($result, $param);
+        
+//        $pdf->Output();
+    }
+    
+    public function load_report($result,$param){
         $result = substr($result, 0, strpos($result, ']')+1);
         $result = substr($result, strpos($result, '['));
         
@@ -97,7 +155,6 @@ class receivable_report extends MY_Controller {
         $pdf->AddPage('L');
         $pdf->create_pdf($filter1, $filter2, $result);
         $pdf->Output("receivableprint","I");
-//        $pdf->Output();
     }
 }
 
