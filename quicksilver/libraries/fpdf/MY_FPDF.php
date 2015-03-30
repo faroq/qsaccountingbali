@@ -88,10 +88,11 @@ class MY_FPDF extends FPDF {
                             $ada=0;
                             if($bordertype){
                                 if(count($bordertype) == count($bcolumn)){
-                                    for($ib=0;$ib<$bcolumn;$ib++){
+                                    for($ib=0;$ib<count($bcolumn);$ib++){
                                         if($ib == $i){
                                             $ada=2;
                                             $bt=$bordertype[$ib];
+                                            
                                         }
                                     }
                                 }

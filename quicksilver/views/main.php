@@ -18,6 +18,7 @@ $this->load->view('receivable');
 $this->load->view('payable');
 $this->load->view('masterreporting');
 $this->load->view('mastercashflow');
+$this->load->view('cashflow');
 $this->load->view('mastercashflowformat');
 $this->load->view('userman/userman');
 ?>

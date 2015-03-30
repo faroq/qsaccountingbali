@@ -64,7 +64,7 @@ Ext.define('Ext.form.field.Month', {
         //        console.log('dari component');
         //        console.log(me.selectMonth);
         if( me.selectMonth ) {
-                    console.log(me.selectMonth);
+//                    console.log(me.selectMonth);
             me.setValue(me.selectMonth);
             me.fireEvent('select', me, me.selectMonth);
         }

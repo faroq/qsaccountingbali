@@ -82,7 +82,7 @@ class receivable_pdf extends MY_FPDF {
         {
             $this->SetFillColor(220,235,205);
             $this->SetTextColor(0);
-            if (($i % 35) == 0)
+            if (($i % 34) == 0)
             {
                 if($i!=0) $this->AddPage('L');
                 $this->SetFont('Arial','B',12);

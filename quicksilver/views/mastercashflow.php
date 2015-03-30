@@ -319,8 +319,8 @@ if (!defined('BASEPATH'))
                                             Ext.getCmp('mcf_idformat').setValue(rec.get('idformat'));
                                             Ext.getCmp('mcf_rekening_debet').setValue(rec.get('rekening_debet'));
                                             Ext.getCmp('mcf_rekening_kredit').setValue(rec.get('rekening_kredit'));                                                                                       
-                                            Ext.getCmp('id_nama_rekening_debet').setValue(rec.get('nama_rekening_debet'));
-                                            Ext.getCmp('id_nama_rekening_kredit').setValue(rec.get('nama_rekening_kredit'));                                                                                       
+                                            Ext.getCmp('id_mcf_nama_rekening_debet').setValue(rec.get('nama_rekening_debet'));
+                                            Ext.getCmp('id_mcf_nama_rekening_kredit').setValue(rec.get('nama_rekening_kredit'));                                                                                       
                                             winmpacc.show();
                                             //                                            Ext.Msg.alert('Edit', 'Edit ' + rec.get('id'));
                                         }

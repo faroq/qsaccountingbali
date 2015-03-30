@@ -20,7 +20,7 @@ if (!defined('BASEPATH'))
         }
     }
 );
-    
+    var pay_date=new Date();
     Ext.define('MyTabPayable', {
         extend: 'Ext.container.Container',
         xtype: 'TabPayable',
@@ -68,6 +68,22 @@ if (!defined('BASEPATH'))
                                         anchor: '90%',
                                         format:'Y-F'
                                         ,id:'pay_thbl'
+                                        ,listeners:{
+                                            select:function(m, d){
+                                                pay_date=d;      
+                                                m.setValue(pay_date); 
+                                            },
+                                            change:function(m,n,o,opt){
+                                                  m.setValue(pay_date); 
+                                            },
+                                            writeablechange:function( me, Read, eOpts ){                                                
+                                                me.setValue(pay_date); 
+                                            },
+                                            dirtychange:function( me, isDirty, eOpts ){                                               
+                                                me.setValue(pay_date); 
+                                            }
+                                          
+                                        }
                                         //                                        ,maxValue:new Date()
                                     }
                                     
@@ -215,7 +231,7 @@ if (!defined('BASEPATH'))
                         //                        stripeRows: true,
                         //                        loadMask: true,
                         stateful:true,
-                        stateId:'stateGridGLRECEIV',
+                        stateId:'stateGridGLpay',
                         columns:[
                             {
                                 text: 'Tanggal',
@@ -321,6 +337,10 @@ if (!defined('BASEPATH'))
                                     if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
                                         parquery[0]['value']='bln';
                                         parquery[2]['value']=Ext.Date.format(Ext.getCmp('pay_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('pay_thbl').getValue()!=pay_date){
+                                            Ext.getCmp('pay_thbl').setValue(pay_date);
+                                            parquery[2]['value']=  Ext.Date.format(pay_date,'Ym');
+                                          }
                                     }
                                     if (!Ext.getCmp('pay_filter_tgl').collapsed){
                                         parquery[0]['value']='tgl';                                        
@@ -329,10 +349,13 @@ if (!defined('BASEPATH'))
                                     }
                                     if (!Ext.getCmp('payable_filter_rekening').collapsed){
                                         parquery[1]['value']='on';
-                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue(); 
+                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue();
+                                        
+                                        setDefaultStoreProxy(payable_store2,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
                                         Ext.getCmp('gridpayable1f').reconfigure(payable_store2,getColums_payable(2));
                                         payable_store2.load({params:{query:Ext.JSON.encode(parquery)}});
                                     }else{
+                                        setDefaultStoreProxy(payable_store1,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
                                         Ext.getCmp('gridpayable1f').reconfigure(payable_store1,getColums_payable(1));
                                         payable_store1.load({params:{query:Ext.JSON.encode(parquery)}});
                                     }
@@ -342,7 +365,330 @@ if (!defined('BASEPATH'))
                                 xtype: 'button',
                                 text: 'Preview PDF',
                                 iconCls: 'icon-preview_report',
-                                handler:function(){}
+                                handler:function(){
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('pay_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('pay_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('pay_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('payable_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('pay_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('pay_thbl').getValue()!=pay_date){
+                                            Ext.getCmp('pay_thbl').setValue(pay_date);
+                                            parquery[2]['value']=  Ext.Date.format(pay_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue();
+                                        
+//                                        setDefaultStoreProxy(payable_store2,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store2,getColums_payable(2));
+//                                        payable_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+//                                        setDefaultStoreProxy(payable_store1,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store1,getColums_payable(1));
+//                                        payable_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                    
+                                    var winprintpayable=Ext.create('winprinttemp');
+                                    winprintpayable.show();
+                                    to_print('printoutpdf', 'payable_report/payable_d_pdfA3?query='+Ext.JSON.encode(parquery)); 
+                                }
+                            } 
+                            // --------------------------REKAp pertanggal
+                            ,{
+                                xtype: 'button',
+                                text: 'Rekap PerTanggal',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('pay_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('pay_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('pay_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('payable_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('pay_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('pay_thbl').getValue()!=pay_date){
+                                            Ext.getCmp('pay_thbl').setValue(pay_date);
+                                            parquery[2]['value']=  Ext.Date.format(pay_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue();
+                                        
+                                        setDefaultStoreProxy(payable_store2,'<?php echo base_url(); ?>' + 'payable_report/get_row_tgl');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store2,getColums_payable(2));
+                                        payable_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+                                        setDefaultStoreProxy(payable_store1,'<?php echo base_url(); ?>' + 'payable_report/get_row_tgl');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store1,getColums_payable(1));
+                                        payable_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Rekap PerTanggal PDF',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('pay_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('pay_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('pay_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('payable_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('pay_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('pay_thbl').getValue()!=pay_date){
+                                            Ext.getCmp('pay_thbl').setValue(pay_date);
+                                            parquery[2]['value']=  Ext.Date.format(pay_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue();
+                                        
+//                                        setDefaultStoreProxy(payable_store2,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store2,getColums_payable(2));
+//                                        payable_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+//                                        setDefaultStoreProxy(payable_store1,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store1,getColums_payable(1));
+//                                        payable_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                    
+                                    var winprintpayable=Ext.create('winprinttemp');
+                                    winprintpayable.show();
+                                    to_print('printoutpdf', 'payable_report/payable_tgl_pdfA3?query='+Ext.JSON.encode(parquery)); 
+                                }
+                            }
+                            // ---------------------- rekap perrekening
+                            ,{
+                                xtype: 'button',
+                                text: 'Rekap PerRekening',
+                                iconCls: 'icon-preview',
+                                handler:function(){
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('pay_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('pay_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('pay_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('payable_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('pay_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('pay_thbl').getValue()!=pay_date){
+                                            Ext.getCmp('pay_thbl').setValue(pay_date);
+                                            parquery[2]['value']=  Ext.Date.format(pay_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue();
+                                        
+                                        setDefaultStoreProxy(payable_store2,'<?php echo base_url(); ?>' + 'payable_report/get_row_rek');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store2,getColums_payable(2));
+                                        payable_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+                                        setDefaultStoreProxy(payable_store1,'<?php echo base_url(); ?>' + 'payable_report/get_row_rek');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store1,getColums_payable(1));
+                                        payable_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                }
+                            },
+                            {
+                                xtype: 'button',
+                                text: 'Rekap PerRekening PDF',
+                                iconCls: 'icon-preview_report',
+                                handler:function(){
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        if (!Ext.getCmp('pay_thbl').getValue()){
+                                            set_message(1,'Tahun Bulan belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        if (!Ext.getCmp('pay_tgl_awal').getValue()){
+                                            set_message(1,'Tanggal Awal belum diisi!!');
+                                            return;
+                                        }
+                                        if (!Ext.getCmp('pay_tgl_akhir').getValue()){
+                                            set_message(1,'Tanggal Akhir belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        if(!Ext.getCmp('payable_rekening').getValue()){
+                                            set_message(1,'Rekening belum diisi!!');
+                                            return;
+                                        }
+                                    }
+                                    var parquery=new Array();
+                                    parquery.push({name:'opt',value:null});
+                                    parquery.push({name:'optrek',value:'off'});
+                                    parquery.push({name:'thbl',value:null});
+                                    parquery.push({name:'tglawal',value:null});
+                                    parquery.push({name:'tglakhir',value:null});
+                                    parquery.push({name:'rekening',value:null});
+                                    
+                                    //                                    'tgl','off','201309','2013-09-26','2013-09-27','1110.10'
+                                    if (!Ext.getCmp('pay_filter_bulantahun').collapsed){
+                                        parquery[0]['value']='bln';
+                                        parquery[2]['value']=Ext.Date.format(Ext.getCmp('pay_thbl').getValue(),'Ym');                                       
+                                        if(Ext.getCmp('pay_thbl').getValue()!=pay_date){
+                                            Ext.getCmp('pay_thbl').setValue(pay_date);
+                                            parquery[2]['value']=  Ext.Date.format(pay_date,'Ym');
+                                          }
+                                    }
+                                    if (!Ext.getCmp('pay_filter_tgl').collapsed){
+                                        parquery[0]['value']='tgl';                                        
+                                        parquery[3]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_awal').getValue(), 'Y-m-d');  
+                                        parquery[4]['value']=Ext.Date.format(Ext.getCmp('pay_tgl_akhir').getValue(), 'Y-m-d');                                                                                 
+                                    }
+                                    if (!Ext.getCmp('payable_filter_rekening').collapsed){
+                                        parquery[1]['value']='on';
+                                        parquery[5]['value']=Ext.getCmp('payable_rekening').getValue();
+                                        
+//                                        setDefaultStoreProxy(payable_store2,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store2,getColums_payable(2));
+//                                        payable_store2.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }else{
+//                                        setDefaultStoreProxy(payable_store1,'<?php echo base_url(); ?>' + 'payable_report/get_row_d');
+                                        Ext.getCmp('gridpayable1f').reconfigure(payable_store1,getColums_payable(1));
+//                                        payable_store1.load({params:{query:Ext.JSON.encode(parquery)}});
+                                    }
+                                    
+                                    var winprintpayable=Ext.create('winprinttemp');
+                                    winprintpayable.show();
+                                    to_print('printoutpdf', 'payable_report/payable_rek_pdfA3?query='+Ext.JSON.encode(parquery)); 
+                                }
                             }
                         ]
                         ,features:[{

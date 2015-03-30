@@ -66,6 +66,17 @@ class global_reference_model extends MY_MODEL {
         $results = $this->get_rows_table($sql_search,$table,$select,$order);
         return $results;
     }
+    
+    function get_periode()
+    {
+        $sql_search="";
+        $select="id, default";
+        $order=NULL;
+        $table="acc_ref_periode";
+        $results = $this->get_rows_table($sql_search,$table,$select,$order);
+        return $results;
+    }
+
 
     function get_mst_account()
     {

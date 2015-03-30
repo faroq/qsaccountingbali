@@ -21,6 +21,12 @@ class global_reference extends MY_Controller {
         $result = $this->global_reference_model->get_jenis();
         echo $result;
     }
+    
+    public function get_periode()
+    {
+        $result = $this->global_reference_model->get_periode();
+        echo $result;
+    }
 
     public function get_dk()
     {
